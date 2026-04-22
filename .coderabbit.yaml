@@ -1,0 +1,20 @@
+reviews:
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        - Flag any use of HKEY_LOCAL_MACHINE (HKLM) for storing per-user settings; per-user preferences must use HKEY_CURRENT_USER (HKCU).
+        - Flag registry key handles that are opened without a context manager (`with` statement) and never explicitly closed via `winreg.CloseKey()` — open handles are a resource leak.
+        - Flag any `winreg.DeleteKey()` call on a key that may have subkeys; use `winreg.DeleteTree()` or recursively delete subkeys first.
+        - Flag missing `try/except FileNotFoundError` (or `OSError`) around `OpenKey`, `QueryValueEx`, and `DeleteKey` calls — these raise if the key does not exist.
+        - Flag storing sensitive values (passwords, tokens, API keys) as plaintext `REG_SZ` in the registry; recommend DPAPI (`win32crypt.CryptProtectData`) or secure storage.
+        - Flag any field that stores a password, secret, token, or API key as a plain string with no indication of encryption or secure handling.
+        - Flag settings fields whose names suggest sensitive data (e.g. `password`, `api_key`, `secret`, `token`) and ensure they are not serialized to the registry in plaintext.
+  suggested_reviewers: true
+  auto_assign_reviewers: true
+  suggested_reviewers_instructions:
+    - reviewers:
+        - handle: lmbae-coderabbit
+          type: user
+        - handle: test-team
+          type: group
+      instructions: "Assign when a PR modifies registry hive constants (e.g. HKEY_LOCAL_MACHINE vs HKEY_CURRENT_USER), adds sensitive fields (password, token, api_key, secret) to registry-serialized models, removes error handling around OpenKey/QueryValueEx/DeleteKey, or changes how registry handles are opened or closed"
