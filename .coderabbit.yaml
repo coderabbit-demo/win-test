@@ -15,6 +15,4 @@ reviews:
     - reviewers:
         - handle: lmbae-coderabbit
           type: user
-        - handle: windows-reviewers
-          type: group
       instructions: "Assign when a PR modifies registry hive constants (e.g. HKEY_LOCAL_MACHINE vs HKEY_CURRENT_USER), adds sensitive fields (password, token, api_key, secret) to registry-serialized models, removes error handling around OpenKey/QueryValueEx/DeleteKey, or changes how registry handles are opened or closed"
